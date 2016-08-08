@@ -146,21 +146,21 @@ public class WikiSearch {
 		return rel1 + rel2;
 	}
 
-	public int compareTo(Entry<String, Integer> that) {
-		Entry<String, Integer> thisEntry = this.map;
-		Integer thisV = thisEntry.getValue();
-		Integer thatV = that.getValue();
-		if (thisV > thatV ){
-			return 1;
-		} 
-		else if (thisV < thatV){
-			return -1;
+	// public int compareTo(WikiSearch that) {
+	// 	Map<String, Integer> thisEntry = this.map;
+	// 	Integer thisV = thisEntry.getValue();
+	// 	Integer thatV = that.getValue();
+	// 	if (thisV > thatV ){
+	// 		return 1;
+	// 	} 
+	// 	else if (thisV < thatV){
+	// 		return -1;
 	
-		} else{
-			return 0;
+	// 	} else{
+	// 		return 0;
 
-		}
-	}
+	// 	}
+	//}
 
 	/**
 	 * Sort the results by relevance.
@@ -168,14 +168,48 @@ public class WikiSearch {
 	 * @return List of entries with URL and relevance.
 	 */
 	public List<Entry<String, Integer>> sort() {
-		// List<Entry<String, Integer>> result = new LinkedList<Entry<String, Integer>>();
-		// for (Entry<String, Integer> entry: this.map.entrySet()){
-		// 	result.add(entry);
-		// }
-		List<Entry<String, Integer>> result = this.map.entrySet();
-		Collections.sort(result);
-		return result;
 
+		// get all entries from the search map and populate a LinkedList first
+		// write a comparator that compares entries (<K,V>)
+		// call sort on the list of entries, return the list 
+
+		List<Entry<String, Integer>> entryList = new LinkedList<Entry<String, Integer>>();
+		
+
+		for (Entry<String, Integer> entry: this.map.entrySet()){
+			entryList.add(entry);
+		}
+
+
+		Comparator<Entry<String,Integer>> comparator = new Comparator<Entry<String,Integer>>(){
+			@Override
+			public int compare(Entry<String,Integer> thisEntry, Entry<String,Integer> thatEntry) {
+				Integer thisV = thisEntry.getValue();
+				Integer thatV = thatEntry.getValue();
+				if (thisV > thatV ){
+					return 1;
+				} 
+				else if (thisV < thatV){
+					return -1;
+			
+				} else{
+					return 0;
+				}
+			}
+		};
+
+		Collections.sort(entryList, comparator);
+		//Collections.sort(this.map);
+
+
+		
+
+		return entryList;
+
+
+
+		// List<Entry<String, Integer>> result = this.map.entrySet();
+		
 	}
 
 	/**
@@ -209,8 +243,14 @@ public class WikiSearch {
 		// search2.print();
 
 		HashMap<String, Integer> hi = new HashMap<String, Integer> ();
-		hi.put("a", 1);
+		hi.put("a", 2);
 		hi.put("b", 1);
+
+		WikiSearch test = new WikiSearch(hi);
+
+		System.out.println(test.sort());
+
+
 
 			
 		// compute the intersection of the searches
