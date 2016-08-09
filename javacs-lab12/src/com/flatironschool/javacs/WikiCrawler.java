@@ -1,17 +1,22 @@
 package com.flatironschool.javacs;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
-import redis.clients.jedis.Jedis;
+// import redis.clients.jedis.Jedis;
 
 
 public class WikiCrawler {
@@ -19,13 +24,22 @@ public class WikiCrawler {
 	private final String source;
 	
 	// the index where the results go
-	private JedisIndex index;
+	//private JedisIndex index;
 	
 	// queue of URLs to be indexed
 	private Queue<String> queue = new LinkedList<String>();
+	private ArrayList<String> urlsSoFar = new ArrayList<String>();
 	
 	// fetcher used to get pages from Wikipedia
 	final static WikiFetcher wf = new WikiFetcher();
+	static File outFile = new File ("urls.txt");
+	//static FileWriter fWriter;
+	static PrintWriter pWriter;
+	static int numUrls;
+
+	
+
+  
 
 	/**
 	 * Constructor.
@@ -33,10 +47,19 @@ public class WikiCrawler {
 	 * @param source
 	 * @param index
 	 */
-	public WikiCrawler(String source, JedisIndex index) {
+	public WikiCrawler(String source) {
 		this.source = source;
-		this.index = index;
+		//this.index = index;
 		queue.offer(source);
+		numUrls = 0;
+		try {
+	     //fWriter = new FileWriter (outFile);
+	     pWriter = new PrintWriter (outFile);
+		}
+
+		catch (IOException e){
+			System.out.println(e);
+		}
 	}
 
 	/**
@@ -55,60 +78,28 @@ public class WikiCrawler {
 	 * @return Number of pages indexed.
 	 * @throws IOException
 	 */
-	public String crawl(boolean testing) throws IOException {
+	public String crawl() throws IOException {
 		if (queue.isEmpty()) {
             return null;
         }
+        // System.out.println(queueSize());
         String url = queue.poll();
+        // System.out.println(url);
         System.out.println("Crawling " + url);
  
-        if (testing==false && index.isIndexed(url)) {
-            System.out.println("Already indexed.");
-            return null;
-        }
- 
         Elements paragraphs;
-        if (testing) {
-            paragraphs = wf.readWikipedia(url);
-        } else {
-            paragraphs = wf.fetchWikipedia(url);
-        }
-        index.indexPage(url, paragraphs);
-        queueInternalLinks(paragraphs);
+
+      	paragraphs = wf.fetchWikipedia(url);
+      	numUrls++;
+      	if (!urlsSoFar.contains(url)){
+      	urlsSoFar.add(url);
+        pWriter.println(url);
+       	queueInternalLinks(paragraphs);
+       }
+       // index.indexPage(url, paragraphs);
+          
         return url;
    
-	// 	String url = queue.remove();
- //        if(testing){
- //        	// choose and remove url from queue (FIFO);
- //        	// read contents of page using wikifetcher.readwikipedia (cached)
- //        	// (should index pages regardless of whether they are already indexed)
- //        	// find ALL internal links and add to queue
- //        	//finally return the page that was indexed (the first removed url)
-        	
- //        	Elements paragraphs = wf.readWikipedia(url);
-
- //        	index.indexPage(url, paragraphs);
- //        	queueInternalLinks(paragraphs);
-
- //        	return url; 
-      
- //        } else{
-
- //        	// choose and remove a url from queue (FIFO)
- //        	// if url is indexed, should not indexit again and return NULL
- //        	// otherwise, should read contents of the page using wikifetcher.fetchwikipedia
- //        	// then it should index the page, add links to the queue and return the URL of the page it indexed 
-
- //        	if(index.isIndexed(url)){
- //        		return null;
- //        	} 
-
- //        	Elements paragraphs = wf.fetchWikipedia(url);
- //        	index.indexPage(url,paragraphs);
- //        	queueInternalLinks(paragraphs);
- //        	return url;
- //        }
-	// }
 	}
 	/**
 	 * Parses paragraphs and adds internal links to the queue.
@@ -152,40 +143,48 @@ public class WikiCrawler {
 		//System.out.println("I'm in the main");
 		
 		// make a WikiCrawler
-		 Jedis jedis = JedisMaker.make();
-		 JedisIndex index = new JedisIndex(jedis); 
+		
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
-		WikiCrawler wc = new WikiCrawler(source, index);
+		WikiCrawler wc = new WikiCrawler(source);
+		
+		while (wc.numUrls < 10){
+		wc.crawl();
+		}
+
+		wc.pWriter.close();
 		
 		// for testing purposes, load up the queue
-		Elements paragraphs = wf.fetchWikipedia(source);
+		// Elements paragraphs = wf.fetchWikipedia(source);
 		
-		wc.queueInternalLinks(paragraphs);
+		// wc.queueInternalLinks(paragraphs);
 
-		System.out.println(wc.queue.peek());
+		// System.out.println(wc.queue.peek());
 		
 
-		String[] urls = wc.queue.toArray(new String[0]);
+		// String[] urls = wc.queue.toArray(new String[0]);
 
-		for (String url: urls){
-			System.out.println(url);
-		}
+		// for (String url: urls){
+		// 	System.out.println(url);
+		// }
 
 
 
-		System.out.println(wc.queueSize());
 
-		//loop until we index a new page
-		String res;
-		do {
-			res = wc.crawl(false);
+
+
+		// System.out.println(wc.queueSize());
+
+		// //loop until we index a new page
+		// String res;
+		// do {
+		// 	res = wc.crawl(false);
 
             
-		} while (res == null);
+		// } while (res == null);
 		
-		Map<String, Integer> map = index.getCounts("the");
-		for (Entry<String, Integer> entry: map.entrySet()) {
-			System.out.println(entry);
-		}
+		// Map<String, Integer> map = index.getCounts("the");
+		// for (Entry<String, Integer> entry: map.entrySet()) {
+		// 	System.out.println(entry);
+		// }
 	}
 }
