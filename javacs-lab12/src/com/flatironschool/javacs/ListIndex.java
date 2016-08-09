@@ -108,7 +108,13 @@ public class ListIndex implements Index{
 
 	@Override
 	public void printIndex() {
-		// TODO Auto-generated method stub
+		for (String term: index.keySet()){
+			System.out.println("Term: " + term);
+			ArrayList<Entry> list = index.get(term);
+			for(Entry entry: list){
+				System.out.println("url: " + entry.url + "count: " + entry.count);
+			}
+		}
 		
 	}
 	
