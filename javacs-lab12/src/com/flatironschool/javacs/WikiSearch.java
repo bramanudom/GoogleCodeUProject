@@ -30,6 +30,38 @@ public class WikiSearch {
 		this.map = map;
 	}
 	
+	/** 
+	 * NEW METHOD: Looks up the Inverse Document Frequency (IDF) aka 
+	 * how important a term is
+	 *
+	 * @param url
+	 * @return the IDF score of the current search
+	 **/
+
+	public Integer getIDF(String url){
+		//TODO: fill this out by first figuring out the skeleton of our search engine
+
+		/* we know that the IDF is calculated according to tfidf.com as
+		 * log_e(Total # of documents/ number of documents with the term in it)
+		 * given a search, we can find the total number of documents with the term 
+		 * in it by simply figuring out the number of keys/ <K,V> sets as each K 
+		 * represents a url/webpage/document that contains the search term 
+
+		 * we now have to figure out how to compute the number of pages we have 
+		 * in total -- we'll have to look at our crawler to see how we'd like to
+		 * combine the two
+
+		 */
+
+
+		return 0;
+
+
+
+
+	}
+
+
 	/**
 	 * Looks up the relevance of a given URL.
 	 * 
@@ -68,16 +100,17 @@ public class WikiSearch {
 			*/
         for (String key: this.map.keySet()){
         	if (that.map.containsKey(key)){
-        		Integer newValue = this.map.get(key) + that.map.get(key);
+        		Integer newValue = this.map.get(key) + that.getRelevance(key);
         		//System.out.println("new combined value = " + newValue);
         		returnMap.put(key, newValue);
 
         	}
+
         /* if the key is specific to one of the maps, add the entire entry to the returnMap
         */
 
         	else {
-        		returnMap.put(key,this.map.get(key));
+        		returnMap.put(key,this.getRelevance(key));
         	}
         }
 
@@ -85,7 +118,7 @@ public class WikiSearch {
 
         for (String key: that.map.keySet()){
         	if (!returnMap.containsKey(key)){
-        		returnMap.put(key, that.map.get(key));
+        		returnMap.put(key, that.getRelevance(key));
         	}
         }
 
@@ -107,7 +140,7 @@ public class WikiSearch {
         
         for (String key: this.map.keySet()){
         	if (that.map.containsKey(key)){
-        		Integer newValue = this.map.get(key) + that.map.get(key);
+        		Integer newValue = this.getRelevance(key) + that.getRelevance(key);
         		returnMap.put(key, newValue);
 
         	}
@@ -127,7 +160,7 @@ public class WikiSearch {
         
         for (String key: this.map.keySet()){
         	if (!that.map.containsKey(key)){
-        		returnMap.put(key, this.map.get(key));
+        		returnMap.put(key, thisgetRelevance(key));
         	}
 		}
 
@@ -145,22 +178,6 @@ public class WikiSearch {
 		// simple starting place: relevance is the sum of the term frequencies.
 		return rel1 + rel2;
 	}
-
-	// public int compareTo(WikiSearch that) {
-	// 	Map<String, Integer> thisEntry = this.map;
-	// 	Integer thisV = thisEntry.getValue();
-	// 	Integer thatV = that.getValue();
-	// 	if (thisV > thatV ){
-	// 		return 1;
-	// 	} 
-	// 	else if (thisV < thatV){
-	// 		return -1;
-	
-	// 	} else{
-	// 		return 0;
-
-	// 	}
-	//}
 
 	/**
 	 * Sort the results by relevance.
@@ -199,16 +216,7 @@ public class WikiSearch {
 		};
 
 		Collections.sort(entryList, comparator);
-		//Collections.sort(this.map);
-
-
-		
-
 		return entryList;
-
-
-
-		// List<Entry<String, Integer>> result = this.map.entrySet();
 		
 	}
 
