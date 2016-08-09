@@ -35,7 +35,7 @@ public class WikiCrawlerTest {
 		jedis = JedisMaker.make();
 		index = new JedisIndex(jedis);
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
-		wc = new WikiCrawler(source, index);
+		wc = new WikiCrawler(source);
 
 		// for testing purposes, load up the queue
 		WikiFetcher wf = new WikiFetcher();
@@ -61,15 +61,15 @@ public class WikiCrawlerTest {
 		String url2 = "https://en.wikipedia.org/wiki/Programming_language";
 		String url3 = "https://en.wikipedia.org/wiki/Concurrent_computing";
 
-		String res = wc.crawl(true);
+		String res = wc.crawl();
 		assertThat(url1.equals(res), is(true));
 		assertThat(wc.queueSize(), is(396));
 
-		res = wc.crawl(true);
+		res = wc.crawl();
 		assertThat(url2.equals(res), is(true));
 		assertThat(wc.queueSize(), is(653));
 
-		res = wc.crawl(true);
+		res = wc.crawl();
 		assertThat(url3.equals(res), is(true));
 		assertThat(wc.queueSize(), is(704));
 

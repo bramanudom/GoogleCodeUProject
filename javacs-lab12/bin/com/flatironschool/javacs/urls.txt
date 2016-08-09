@@ -1,0 +1,10 @@
+https://en.wikipedia.org/wiki/Java_(programming_language)
+https://en.wikipedia.org/wiki/Programming_language
+https://en.wikipedia.org/wiki/Concurrent_computing
+https://en.wikipedia.org/wiki/Class-based_programming
+https://en.wikipedia.org/wiki/Object-oriented_programming
+https://en.wikipedia.org/wiki/Write_once,_run_anywhere
+https://en.wikipedia.org/wiki/Compiler
+https://en.wikipedia.org/wiki/Java_bytecode
+https://en.wikipedia.org/wiki/Java_virtual_machine
+https://en.wikipedia.org/wiki/Computer_architecture

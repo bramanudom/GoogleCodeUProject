@@ -1,6 +1,8 @@
 package com.flatironschool.javacs;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +36,8 @@ public class ListIndex implements Index{
 	public void add() throws IOException{ //CHANGE METHOD SIGNCATURE INTERFACE	
 		// TODO Auto-generated method stub
 		WikiFetcher wf = new WikiFetcher();
-		scanny = new Scanner(new File(fileName));
+		URL filePath = getClass().getResource(fileName);
+		scanny = new Scanner(new File(filePath.getPath()));
 		while(scanny.hasNext()){
 			String url = scanny.nextLine();
 			Elements paragraphs = wf.fetchWikipedia(url);
@@ -109,8 +112,8 @@ public class ListIndex implements Index{
 		
 	}
 	
-	public static void main(String[] args) throws IOException{
-		ListIndex listIndex = new ListIndex();
+	public static void main(String[] args) throws IOException{		
+		ListIndex listIndex = new ListIndex("urls.txt");
 		listIndex.add();
 		// listIndex.index = new HashMap<String, ArrayList<Entry>>();
 		// ArrayList<Entry> entries = new ArrayList<Entry>();
@@ -119,7 +122,7 @@ public class ListIndex implements Index{
 		//listIndex.incrementTermCount("a", "abc");
 		
 		ArrayList<Entry> list = listIndex.index.get("the");
-		System.out.println("count: " +  list.get(0).count);
+//		System.out.println("count: " +  list.get(0).count);
 	}
 
 }
