@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Scanner;
+import java.io.File;
 
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -12,7 +14,8 @@ import org.jsoup.select.Elements;
 public class ListIndex implements Index{
 	
 	String fileName;
-	HashMap<String, ArrayList<Entry>> index;
+	HashMap<String, ArrayList<Entry>> index = new HashMap<String, ArrayList<Entry>>();
+	Scanner scanny;
 	
 	public ListIndex() {
 		
@@ -28,11 +31,15 @@ public class ListIndex implements Index{
 		return false;
 	}
 
-	public void add(String term, String url) throws IOException{ //CHANGE METHOD SIGNCATURE INTERFACE	
+	public void add() throws IOException{ //CHANGE METHOD SIGNCATURE INTERFACE	
 		// TODO Auto-generated method stub
 		WikiFetcher wf = new WikiFetcher();
-		Elements paragraphs = wf.readWikipedia(url);
-		indexPage(url, paragraphs);
+		scanny = new Scanner(new File(fileName));
+		while(scanny.hasNext()){
+			String url = scanny.nextLine();
+			Elements paragraphs = wf.fetchWikipedia(url);
+			indexPage(url, paragraphs);
+		}
 	}
 
 	@Override
@@ -104,13 +111,14 @@ public class ListIndex implements Index{
 	
 	public static void main(String[] args) throws IOException{
 		ListIndex listIndex = new ListIndex();
-		listIndex.index = new HashMap<String, ArrayList<Entry>>();
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		entries.add(new Entry("abc", 1));
-		listIndex.index.put("a", entries);
-		listIndex.incrementTermCount("a", "abc");
+		listIndex.add();
+		// listIndex.index = new HashMap<String, ArrayList<Entry>>();
+		// ArrayList<Entry> entries = new ArrayList<Entry>();
+		// entries.add(new Entry("abc", 1));
+		// listIndex.index.put("a", entries);
+		//listIndex.incrementTermCount("a", "abc");
 		
-		ArrayList<Entry> list = listIndex.index.get("a");
+		ArrayList<Entry> list = listIndex.index.get("the");
 		System.out.println("count: " +  list.get(0).count);
 	}
 
