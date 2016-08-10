@@ -16,11 +16,9 @@ public class Search{
 		this.indexKind = indexKind;
 	}
 
+	public void indexPages() {
+		long startTime = System.nanoTime();
 
-
-	public String[] topFive(){
-		long startTime = System.currentTimeMillis();
-		String[] result;
 		if (indexKind.equals("tree")) {
 			try{
 				bstIndex.add();
@@ -28,9 +26,7 @@ public class Search{
 			catch(IOException e){
 				System.out.println(e);
 			}
-			
-			result = bstIndex.topFive(searchTerm);
-		}
+					}
 		else {
 			try{
 				listIndex.add();
@@ -38,11 +34,25 @@ public class Search{
 			catch(IOException e){
 				System.out.println(e);
 			}
+		}
+		long stopTime = System.nanoTime();
+		System.out.println("Indexing Elapsed time was " + (stopTime - startTime)/1000 + " miliseconds.");
+	}
+
+	public String[] topFive(){
+		long startTime = System.nanoTime();
+		String[] result;
+		
+		indexPages();
+		if (indexKind.equals("tree")) {
+			result = bstIndex.topFive(searchTerm);
+		}
+		else {
 			result = listIndex.topFive(searchTerm);
 		}
 		System.out.println(Arrays.toString(result));
-		long stopTime = System.currentTimeMillis();
-		System.out.println("Elapsed time was " + (stopTime - startTime) + " miliseconds.");
+		long stopTime = System.nanoTime();
+		System.out.println("Total Elapsed time was " + (stopTime - startTime)/1000 + " miliseconds.");
 		return result;
 	}
 
