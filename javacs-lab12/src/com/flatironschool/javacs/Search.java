@@ -36,7 +36,7 @@ public class Search{
 			}
 		}
 		long stopTime = System.nanoTime();
-		System.out.println("Indexing Elapsed time was " + (stopTime - startTime)/1000 + " miliseconds.");
+		System.out.println("Indexing Elapsed time was " + (stopTime - startTime)/1000 + " microseconds.");
 	}
 
 	public String[] topFive(){
@@ -52,7 +52,7 @@ public class Search{
 		}
 		System.out.println(Arrays.toString(result));
 		long stopTime = System.nanoTime();
-		System.out.println("Total Elapsed time was " + (stopTime - startTime)/1000 + " miliseconds.");
+		System.out.println("Total Elapsed time was " + (stopTime - startTime)/1000 + " microseconds.");
 		return result;
 	}
 
@@ -60,10 +60,26 @@ public class Search{
 		
 
 		public static void main(String[] args){
-		Search treeSearch = new Search("the", "tree");
-		treeSearch.topFive();
-		Search listSearch = new Search("the", "list");
-		listSearch.topFive();
+//			System.out.println("Search terms: ");
+			String searchTerm;
+			String indexType;
+			if (args.length > 0) {
+			    try {
+			        searchTerm = args[0];
+			        indexType = args[1];
+			        
+			        Search treeSearch = new Search(searchTerm, indexType);
+					treeSearch.topFive();
+			    } catch (NumberFormatException e) {
+			        System.err.println("Please provide a relevant search term and choose either list or tree");
+			        System.exit(1);
+			    }
+			}
+			    
+//			Search treeSearch = new Search(searchTerm, indexType);
+//			treeSearch.topFive();
+//			Search listSearch = new Search(searchTerm, "list");
+//			listSearch.topFive();
 
 	}
 
