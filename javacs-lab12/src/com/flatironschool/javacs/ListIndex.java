@@ -18,6 +18,7 @@ public class ListIndex implements Index{
 	String fileName;
 	HashMap<String, ArrayList<Entry>> index = new HashMap<String, ArrayList<Entry>>();
 	Scanner scanny;
+	String term;
 	
 	public ListIndex() {
 		
@@ -33,6 +34,17 @@ public class ListIndex implements Index{
 		return false;
 	}
 
+	public String[] topFive (String term){
+		String [] results = new String[5]
+		ArrayList<Entry> entries = getEntries(term))
+		for(int i = 0; i < 5; i++){
+			results[i] = entries.get(i);
+		}
+
+		return results;
+	}
+
+	
 	public void add() throws IOException{ //CHANGE METHOD SIGNCATURE INTERFACE	
 		// TODO Auto-generated method stub
 		WikiFetcher wf = new WikiFetcher();
@@ -45,14 +57,56 @@ public class ListIndex implements Index{
 		}
 	}
 
+	/* returns the array of entry objects given a term */
+
+	public ArrayList<Entry> getEntries(String term){
+		this.term = term;
+		index.get(term);
+	}
+
+	public List<Entry> sort() {
+
+		// get all entries from the search map and populate a LinkedList first
+		// write a comparator that compares entries (<K,V>)
+		// call sort on the list of entries, return the list 
+
+		List<Entry> entryList = new LinkedList<Entry>();
+		
+
+		for (Entry entry: this.getEntries(term)){
+			entryList.add(entry);
+		}
+
+
+		Comparator<Entry> comparator = new Comparator<Entry>(){
+			@Override
+			public int compare(Entry thisEntry, Entry thatEntry) {
+				Integer thisV = thisEntry.getCount);
+				Integer thatV = thatEntry.getCount();
+				if (thisV > thatV ){
+					return 1;
+				} 
+				else if (thisV < thatV){
+					return -1;
+			
+				} else{
+					return 0;
+				}
+			}
+		};
+
+		Collections.sort(entryList, comparator);
+		return entryList;
+	}
+
 	@Override
-	public Set<String> getURLs(String term) {
+	public ArrayList<Entry> getURLs(String term) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Map<String, Integer> getCounts(String term) {
+	public ArrayList<Entry> getCounts(String term) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -68,6 +122,9 @@ public class ListIndex implements Index{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	public
 
 	@Override
 	public void indexPage(String url, Elements paragraphs) {
@@ -99,7 +156,7 @@ public class ListIndex implements Index{
 		if (index.containsKey(term)) {
 			ArrayList<Entry> entryList = index.get(term);
 			for (Entry entry : entryList) {
-				if (entry.url.equals(url)) {
+				if (entry.getUrl().equals(url)) {
 					entry.addOne();
 					return true;
 				}
@@ -120,7 +177,7 @@ public class ListIndex implements Index{
 			System.out.println("Term: " + term);
 			ArrayList<Entry> list = index.get(term);
 			for(Entry entry: list){
-				System.out.println("url: " + entry.url + "count: " + entry.count);
+				System.out.println("url: " + entry.getUrl() + "count: " + entry.getCount());
 			}
 		}
 		
@@ -138,8 +195,8 @@ public class ListIndex implements Index{
 }
 
 class Entry {
-	String url;
-	int count;
+	static String url;
+	static int count;
 	
 	public Entry(String url, int count) {
 		this.url = url;
@@ -149,4 +206,15 @@ class Entry {
 	public void addOne() {
 		count += 1;
 	}
+
+	public int getCount(){
+		return this.count;
+	}
+
+	public String getUrl(){
+		return this.url;
+	}
+
+
+
 }
