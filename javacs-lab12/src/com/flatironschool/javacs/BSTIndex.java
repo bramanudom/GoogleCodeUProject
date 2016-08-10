@@ -19,6 +19,8 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
+import com.flatironschool.javacs.BST.BSTNode;
+
 public class BSTIndex {
 	HashMap<String, BST> index = new HashMap<String, BST>();
 	Scanner scanny;
@@ -26,20 +28,20 @@ public class BSTIndex {
 	String fileName;
 
 	public BSTIndex(String filename){
-		this.filename = filename;
+		this.fileName = filename;
 
 	}
 
 	public static void main(String[] args){
 		BSTIndex bstIndex = new BSTIndex("urls.txt");
 		try{
-			bstIndex.add()
+			bstIndex.add();
 		} catch (IOException e){
 			System.out.println(e);
 		}
 
-		System.out.println("There are " + bstIndex.size + " words in the index");
-		System.out.println(Array.toString(bstIndex.topFive("the"));
+		System.out.println("There are " + bstIndex.index.size() + " words in the index");
+		System.out.println(Arrays.toString(bstIndex.topFive("the")));
 	}
 
 	public String[] topFive(String term) {
@@ -48,29 +50,18 @@ public class BSTIndex {
 
 
 	   for(int i=0; i < 5; i++){
-	   	Node max = findMax(termTree.root);
+	   	BSTNode max = termTree.findMax(termTree.root);
 	   	result[i] = max.url;
 	   }
 
 	   return result; 
    }
 
-   public Node findMax(Node node){ //pass the root
 
-   		if (node.right!=null && node.right.visited==false) {
-   			findMax(node.right);
-   		} else {
-   			node.visited = true;
-   			return node;
-   		}
-   }
-
-
-   public boolean incrementTermCount(String term, String url) {
-		
+   public void incrementTermCount(String term, String url) {
 		if (index.containsKey(term)) {
 			BST entryBST = index.get(term);
-			Node foundNode = entryBST.findNode(url, entryBST.root)
+			BSTNode foundNode = entryBST.findBSTNode(url, entryBST.root);
 
 			if ( foundNode != null){
 				foundNode.count++;
@@ -82,6 +73,7 @@ public class BSTIndex {
 		else{
 			BST newTermTree = new BST();
 			newTermTree.insert(1, url);
+			index.put(term, newTermTree);
 		}
 	}
 
