@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
@@ -41,14 +42,16 @@ public class ListIndex implements Index{
 	public String[] topFive (String term){
 		String [] results = new String[5];
 		ArrayList<Entry> entries = getEntries(term);
-		for(int i = 0; i < 5; i++){
+		int i = 0;
+		while(i<5 && i<entries.size()) {
 			results[i] = entries.get(i).getUrl();
+			i++;
 		}
-
 		return results;
 	}
 
 
+	
 	public void add() throws IOException{ //CHANGE METHOD SIGNCATURE INTERFACE	
 		// TODO Auto-generated method stub
 		WikiFetcher wf = new WikiFetcher();
@@ -56,8 +59,10 @@ public class ListIndex implements Index{
 		scanny = new Scanner(new File(filePath.getPath()));
 		while(scanny.hasNext()){
 			String url = scanny.nextLine();
+//			System.out.println(url);
 			Elements paragraphs = wf.fetchWikipedia(url);
 			indexPage(url, paragraphs);
+			//scanny.nextLine();
 		}
 	}
 
@@ -77,7 +82,7 @@ public class ListIndex implements Index{
 		List<Entry> entryList = new LinkedList<Entry>();
 		
 
-		for (Entry entry: this.getEntries(term)){
+		for (Entry entry: getEntries(term)){
 			entryList.add(entry);
 		}
 
@@ -156,15 +161,26 @@ public class ListIndex implements Index{
 	}
 	
 	public boolean incrementTermCount(String term, String url) {
+		
 		if (index.containsKey(term)) {
+//			if (term.equals("the")) {
+//				System.out.println(url);
+//			}
 			ArrayList<Entry> entryList = index.get(term);
+//			if (term.equals("the")) {
+//				System.out.println(entryList.size());
+//				System.out.println(url);
+//			}
 			for (Entry entry : entryList) {
 				if (entry.getUrl().equals(url)) {
 					entry.addOne();
 					return true;
 				}
 			}
+			
+//			System.out.println(index.size());
 			entryList.add(new Entry(url, 1));
+//			System.out.println(index.get(term).size());
             return true;
         } else {
         	ArrayList<Entry> newEntryList = new ArrayList<Entry>();
@@ -196,15 +212,19 @@ public class ListIndex implements Index{
 		}
 
 		
+		System.out.println("There are " + listIndex.index.size() + " words");		
 		ArrayList<Entry> list = listIndex.index.get("the");
-//		System.out.println("count: " +  list.get(0).count);
+		System.out.println("There are " + list.size() +" urls that have the word the in them");
+		System.out.println("count: " +  list.get(0).count);
+		System.out.println(list);
+		System.out.println(Arrays.toString(listIndex.topFive("the")));
 	}
 
 }
 
 class Entry {
-	static String url;
-	static int count;
+	String url;
+	int count;
 	
 	public Entry(String url, int count) {
 		this.url = url;
@@ -223,6 +243,8 @@ class Entry {
 		return this.url;
 	}
 
-
+	public String toString() {
+		return this.url;
+	}
 
 }
