@@ -104,33 +104,30 @@ public class ListIndex implements Index{
 					return true;
 				}
 			}
-			entryList.add(new Entry(url, 1));
-			return true;
-		} else {
-			ArrayList<Entry> newEntryList = new ArrayList<Entry>();
-			newEntryList.add(new Entry(url, 1));
-			index.put(term, newEntryList);
-			return true;
+			//url doesn't already exist
+
 		}
 	}
 
 	@Override
 	public void printIndex() {
-		System.out.println("START");
 		for (String term: index.keySet()){
-			System.out.println("-----------------------------");
 			System.out.println("Term: " + term);
 			ArrayList<Entry> list = index.get(term);
 			for(Entry entry: list){
-				System.out.println("url: " + entry.url + "  " + "count: " + entry.count);
+				System.out.println("url: " + entry.url + "count: " + entry.count);
 			}
-		}	
+		}
+		
 	}
 	
 	public static void main(String[] args) throws IOException{		
 		ListIndex listIndex = new ListIndex("urls.txt");
 		listIndex.add();
-		listIndex.printIndex();
+
+		
+		ArrayList<Entry> list = listIndex.index.get("the");
+//		System.out.println("count: " +  list.get(0).count);
 	}
 
 }
