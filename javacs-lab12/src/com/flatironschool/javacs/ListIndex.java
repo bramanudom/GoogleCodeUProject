@@ -104,9 +104,14 @@ public class ListIndex implements Index{
 					return true;
 				}
 			}
-			//url doesn't already exist
-
-		}
+			entryList.add(new Entry(url, 1));
+            return true;
+        } else {
+        	ArrayList<Entry> newEntryList = new ArrayList<Entry>();
+        	newEntryList.add(new Entry(url, 1));
+        	index.put(term, newEntryList);
+        	return true;
+        }
 	}
 
 	@Override
