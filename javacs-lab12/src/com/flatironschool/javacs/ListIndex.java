@@ -3,7 +3,11 @@ package com.flatironschool.javacs;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,16 +39,16 @@ public class ListIndex implements Index{
 	}
 
 	public String[] topFive (String term){
-		String [] results = new String[5]
-		ArrayList<Entry> entries = getEntries(term))
+		String [] results = new String[5];
+		ArrayList<Entry> entries = getEntries(term);
 		for(int i = 0; i < 5; i++){
-			results[i] = entries.get(i);
+			results[i] = entries.get(i).getUrl();
 		}
 
 		return results;
 	}
 
-	
+
 	public void add() throws IOException{ //CHANGE METHOD SIGNCATURE INTERFACE	
 		// TODO Auto-generated method stub
 		WikiFetcher wf = new WikiFetcher();
@@ -61,7 +65,7 @@ public class ListIndex implements Index{
 
 	public ArrayList<Entry> getEntries(String term){
 		this.term = term;
-		index.get(term);
+		return index.get(term);
 	}
 
 	public List<Entry> sort() {
@@ -81,7 +85,7 @@ public class ListIndex implements Index{
 		Comparator<Entry> comparator = new Comparator<Entry>(){
 			@Override
 			public int compare(Entry thisEntry, Entry thatEntry) {
-				Integer thisV = thisEntry.getCount);
+				Integer thisV = thisEntry.getCount();
 				Integer thatV = thatEntry.getCount();
 				if (thisV > thatV ){
 					return 1;
@@ -99,34 +103,33 @@ public class ListIndex implements Index{
 		return entryList;
 	}
 
-	@Override
+
 	public ArrayList<Entry> getURLs(String term) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public ArrayList<Entry> getCounts(String term) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public Map<String, Integer> getCountsFaster(String term) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public Integer getCount(String url, String term) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-	public
 
-	@Override
+
 	public void indexPage(String url, Elements paragraphs) {
 		// TODO Auto-generated method stub
 		for (Node node: paragraphs) {
@@ -171,7 +174,7 @@ public class ListIndex implements Index{
         }
 	}
 
-	@Override
+
 	public void printIndex() {
 		for (String term: index.keySet()){
 			System.out.println("Term: " + term);
@@ -185,7 +188,12 @@ public class ListIndex implements Index{
 	
 	public static void main(String[] args) throws IOException{		
 		ListIndex listIndex = new ListIndex("urls.txt");
-		listIndex.add();
+		try{
+			listIndex.add();
+		}
+		catch(IOException e){
+			System.out.print(e);
+		}
 
 		
 		ArrayList<Entry> list = listIndex.index.get("the");
